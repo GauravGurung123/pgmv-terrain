@@ -733,6 +733,20 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &607302254
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 607302246}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6cc2006accc3ae75938406637d43906, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CollisionSoundController
+  collisionAudioSource: {fileID: 607302253}
+  minimumTimeBetweenSounds: 0.5
 --- !u!1 &711967917
 GameObject:
   m_ObjectHideFlags: 0
@@ -1404,6 +1418,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4edfc83189ecd84a6954731fade5a19e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 607302253}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4edfc83189ecd84a6954731fade5a19e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 607302254}
   m_SourcePrefab: {fileID: 100100000, guid: 4edfc83189ecd84a6954731fade5a19e, type: 3}
 --- !u!1 &1521678575
 GameObject:
