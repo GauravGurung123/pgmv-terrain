@@ -3,7 +3,7 @@ using UnityEngine;
 public class DayNightCycle : MonoBehaviour
 {
     [Header("Time Settings")]
-    public float dayDurationInSeconds = 60f;
+    public float dayDurationInSeconds = 300f;
 
     [Header("Sun Settings")]
     public Light sunLight;
