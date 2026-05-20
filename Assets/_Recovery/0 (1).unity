@@ -2147,8 +2147,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   axiom: FB
-  iterations: 4
-  length: 1
+  iterations: 40
+  length: 10
   angle: 20
 --- !u!4 &1827789141
 Transform:
