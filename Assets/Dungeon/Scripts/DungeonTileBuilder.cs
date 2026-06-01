@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class DungeonTileBuilder : MonoBehaviour
 {
     public DungeonGenerator generator;
@@ -14,6 +15,10 @@ public class DungeonTileBuilder : MonoBehaviour
     public GameObject treasurePrefab;
     public GameObject typeA_Prefab;
     public GameObject typeB_Prefab;
+
+    
+    [Header("Player Settings")]
+    public GameObject playerAvatar;
 
     // Aquí guardaremos las coordenadas de todos los suelos para calcular los muros
     private HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
@@ -41,6 +46,19 @@ public class DungeonTileBuilder : MonoBehaviour
 
         // 3. ¡NUEVO! Levantar las paredes alrededor de los suelos
         BuildWalls();
+
+        if (playerAvatar != null && generator.rooms.Count > 0)
+        {
+            Vector3 startPos = new Vector3(generator.rooms[0].Center.x, 1f, generator.rooms[0].Center.y);
+            
+            // Truco de Unity: Para mover un CharacterController instantáneamente, hay que apagarlo y encenderlo
+            CharacterController cc = playerAvatar.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false;
+            
+            playerAvatar.transform.position = startPos;
+            
+            if (cc != null) cc.enabled = true;
+        }
     }
 
     void BuildRoom(DungeonRoom room)
