@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("References")]
     public Animator animator;
+    public Transform cam; 
 
     private CharacterController characterController;
     private Vector3 verticalVelocity;
@@ -35,10 +36,11 @@ public class PlayerController : MonoBehaviour
 
     private void MovePlayer()
     {
-        float horizontal = Input.GetAxis("Horizontal");
-        float vertical = Input.GetAxis("Vertical");
+        // Using GetAxisRaw instead of GetAxis prevents input delay and makes camera-relative math snappier
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
 
-        Vector3 inputDirection = new Vector3(horizontal, 0f, vertical);
+        Vector3 inputDirection = new Vector3(horizontal, 0f, vertical).normalized;
 
         bool hasMovementInput = inputDirection.magnitude > 0.1f;
         bool isRunning = Input.GetKey(KeyCode.LeftShift);
@@ -47,17 +49,20 @@ public class PlayerController : MonoBehaviour
 
         if (hasMovementInput)
         {
-            inputDirection.Normalize();
+            // 1. Calculate the target angle using the player's input AND the camera's Y rotation
+            float targetAngle = Mathf.Atan2(inputDirection.x, inputDirection.z) * Mathf.Rad2Deg + cam.eulerAngles.y;
 
-            Quaternion targetRotation = Quaternion.LookRotation(inputDirection);
+            // 2. Rotate the player to face the new angle smoothly using your existing rotationSpeed
+            Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
             transform.rotation = Quaternion.Slerp(
                 transform.rotation,
                 targetRotation,
                 rotationSpeed * Time.deltaTime
             );
 
-            Vector3 moveDirection = inputDirection * currentSpeed;
-            characterController.Move(moveDirection * Time.deltaTime);
+            // 3. Move the character in the direction of the calculated angle
+            Vector3 moveDirection = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
+            characterController.Move(moveDirection.normalized * currentSpeed * Time.deltaTime);
         }
 
         ApplyGravity();
