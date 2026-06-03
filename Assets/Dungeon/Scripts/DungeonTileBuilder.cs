@@ -8,7 +8,8 @@ public class DungeonTileBuilder : MonoBehaviour
 
     [Header("Prefabs de Construcción")]
     public GameObject floorPrefab;
-    public GameObject wallPrefab; // ¡Nueva variable para la pared!
+    public GameObject wallPrefab; 
+    public GameObject pillarPrefab;
     public GameObject doorPrefab;
     
     [Header("Prefabs de Decoración")]
@@ -46,6 +47,8 @@ public class DungeonTileBuilder : MonoBehaviour
 
         // 3. ¡NUEVO! Levantar las paredes alrededor de los suelos
         BuildWalls();
+
+        BuildPillars();
 
         if (playerAvatar != null && generator.rooms.Count > 0)
         {
@@ -128,7 +131,7 @@ public class DungeonTileBuilder : MonoBehaviour
 
     void BuildWalls()
     {
-        // Posibles direcciones adyacentes (Arriba, Abajo, Izquierda, Derecha)
+        // Direcciones adyacentes: Arriba (Norte), Abajo (Sur), Izquierda (Oeste), Derecha (Este)
         Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
         HashSet<Vector2Int> wallPositions = new HashSet<Vector2Int>();
 
@@ -141,10 +144,52 @@ public class DungeonTileBuilder : MonoBehaviour
                 // Si al lado de este suelo NO hay otro suelo, y tampoco hemos puesto un muro ya ahí...
                 if (!floorPositions.Contains(neighbor) && !wallPositions.Contains(neighbor))
                 {
-                    // Altura temporal de 0.5f suponiendo que el cubo del muro tiene escala Y=1
-                    Vector3 wallPos = new Vector3(neighbor.x, 0.5f, neighbor.y);
-                    Instantiate(wallPrefab, wallPos, Quaternion.identity, transform);
+                    // Altura temporal, ajústala si tu nuevo muro queda flotando o muy hundido
+                    Vector3 wallPos = new Vector3(neighbor.x, 0f, neighbor.y);
+                    
+                    // --- ¡NUEVO! Calculamos la rotación correcta según la dirección ---
+                    Quaternion wallRotation = Quaternion.identity;
+
+                    if (dir == Vector2Int.up) // Pared al Norte
+                        wallRotation = Quaternion.Euler(0, 0, 0); 
+                    else if (dir == Vector2Int.down) // Pared al Sur
+                        wallRotation = Quaternion.Euler(0, 180, 0);
+                    else if (dir == Vector2Int.left) // Pared al Oeste
+                        wallRotation = Quaternion.Euler(0, -90, 0);
+                    else if (dir == Vector2Int.right) // Pared al Este
+                        wallRotation = Quaternion.Euler(0, 90, 0);
+
+                    Instantiate(wallPrefab, wallPos, wallRotation, transform);
                     wallPositions.Add(neighbor); // Evitamos poner dos muros en el mismo sitio
+                }
+            }
+        }
+    }
+
+    void BuildPillars()
+    {
+        HashSet<Vector2Int> pillarPositions = new HashSet<Vector2Int>();
+
+        foreach (DungeonRoom room in generator.rooms)
+        {
+            // Calculamos las 4 esquinas exteriores exactas de la habitación
+            Vector2Int[] corners = new Vector2Int[]
+            {
+                new Vector2Int(room.bounds.x - 1, room.bounds.y - 1), // Esquina inferior izquierda
+                new Vector2Int(room.bounds.x + room.bounds.width, room.bounds.y - 1), // Esquina inferior derecha
+                new Vector2Int(room.bounds.x - 1, room.bounds.y + room.bounds.height), // Esquina superior izquierda
+                new Vector2Int(room.bounds.x + room.bounds.width, room.bounds.y + room.bounds.height) // Esquina superior derecha
+            };
+
+            foreach (Vector2Int corner in corners)
+            {
+                // Solo ponemos el pilar si en esa esquina NO hay un suelo/pasillo y si no hemos puesto ya otro pilar
+                if (!floorPositions.Contains(corner) && !pillarPositions.Contains(corner))
+                {
+                    // Altura Y = 0. Asegúrate de que el modelo de tu pilar tiene el pivote en la base
+                    Vector3 pos = new Vector3(corner.x, 0f, corner.y);
+                    Instantiate(pillarPrefab, pos, Quaternion.identity, transform);
+                    pillarPositions.Add(corner);
                 }
             }
         }
