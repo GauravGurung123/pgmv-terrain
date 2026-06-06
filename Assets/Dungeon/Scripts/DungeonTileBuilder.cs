@@ -9,8 +9,13 @@ public class DungeonTileBuilder : MonoBehaviour
     [Header("Prefabs de Construcción")]
     public GameObject floorPrefab;
     public GameObject wallPrefab; 
+    public GameObject wallLightPrefab;
     public GameObject pillarPrefab;
     public GameObject doorPrefab;
+    public GameObject ceilingPrefab;
+
+    [Header("Ajustes de Construcción")]
+    public float ceilingHeight = 4.5f;
     
     [Header("Prefabs de Decoración")]
     public GameObject treasurePrefab;
@@ -23,6 +28,7 @@ public class DungeonTileBuilder : MonoBehaviour
 
     // Aquí guardaremos las coordenadas de todos los suelos para calcular los muros
     private HashSet<Vector2Int> floorPositions = new HashSet<Vector2Int>();
+    private HashSet<Vector2Int> wallPositions = new HashSet<Vector2Int>();
 
     void Start()
     {
@@ -35,6 +41,7 @@ public class DungeonTileBuilder : MonoBehaviour
     public void BuildDungeon()
     {
         floorPositions.Clear();
+        wallPositions.Clear();
 
         // 1. Construir el suelo y la decoración de las habitaciones
         foreach (DungeonRoom room in generator.rooms)
@@ -49,6 +56,8 @@ public class DungeonTileBuilder : MonoBehaviour
         BuildWalls();
 
         BuildPillars();
+
+        BuildCeilings();
 
         if (playerAvatar != null && generator.rooms.Count > 0)
         {
@@ -131,9 +140,9 @@ public class DungeonTileBuilder : MonoBehaviour
 
     void BuildWalls()
     {
-        // Direcciones adyacentes: Arriba (Norte), Abajo (Sur), Izquierda (Oeste), Derecha (Este)
         Vector2Int[] directions = { Vector2Int.up, Vector2Int.down, Vector2Int.left, Vector2Int.right };
-        HashSet<Vector2Int> wallPositions = new HashSet<Vector2Int>();
+        
+        int wallCounter = 0; // <--- ¡NUESTRO CONTADOR DE PAREDES!
 
         foreach (Vector2Int pos in floorPositions)
         {
@@ -141,28 +150,42 @@ public class DungeonTileBuilder : MonoBehaviour
             {
                 Vector2Int neighbor = pos + dir;
                 
-                // Si al lado de este suelo NO hay otro suelo, y tampoco hemos puesto un muro ya ahí...
                 if (!floorPositions.Contains(neighbor) && !wallPositions.Contains(neighbor))
                 {
-                    // Altura temporal, ajústala si tu nuevo muro queda flotando o muy hundido
                     Vector3 wallPos = new Vector3(neighbor.x, 0f, neighbor.y);
-                    
-                    // --- ¡NUEVO! Calculamos la rotación correcta según la dirección ---
                     Quaternion wallRotation = Quaternion.identity;
 
-                    if (dir == Vector2Int.up) // Pared al Norte
-                        wallRotation = Quaternion.Euler(0, 0, 0); 
-                    else if (dir == Vector2Int.down) // Pared al Sur
-                        wallRotation = Quaternion.Euler(0, 180, 0);
-                    else if (dir == Vector2Int.left) // Pared al Oeste
-                        wallRotation = Quaternion.Euler(0, -90, 0);
-                    else if (dir == Vector2Int.right) // Pared al Este
-                        wallRotation = Quaternion.Euler(0, 90, 0);
+                    if (dir == Vector2Int.up) wallRotation = Quaternion.Euler(0, 0, 0); 
+                    else if (dir == Vector2Int.down) wallRotation = Quaternion.Euler(0, 180, 0);
+                    else if (dir == Vector2Int.left) wallRotation = Quaternion.Euler(0, -90, 0);
+                    else if (dir == Vector2Int.right) wallRotation = Quaternion.Euler(0, 90, 0);
 
-                    Instantiate(wallPrefab, wallPos, wallRotation, transform);
-                    wallPositions.Add(neighbor); // Evitamos poner dos muros en el mismo sitio
+                    wallCounter++; 
+                    GameObject selectedWallPrefab = wallPrefab;
+
+                 
+                    if (wallCounter % 6 == 0)
+                    {
+                        selectedWallPrefab = wallLightPrefab;
+                    }
+
+                    Instantiate(selectedWallPrefab, wallPos, wallRotation, transform);
+                    wallPositions.Add(neighbor);
                 }
             }
+        }
+    }
+
+    void BuildCeilings()
+    {
+        // Giramos el techo 180 grados para que la cara "visible" o texturizada mire hacia abajo (hacia el jugador)
+        Quaternion ceilingRotation = Quaternion.Euler(180f, 0f, 0f);
+
+        foreach (Vector2Int pos in floorPositions)
+        {
+            // Misma posición X y Z que el suelo, pero elevado a la altura de 'ceilingHeight'
+            Vector3 ceilingPos = new Vector3(pos.x, ceilingHeight, pos.y);
+            Instantiate(ceilingPrefab, ceilingPos, ceilingRotation, transform);
         }
     }
 
