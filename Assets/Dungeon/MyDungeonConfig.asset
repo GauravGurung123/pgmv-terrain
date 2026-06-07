@@ -15,9 +15,10 @@ MonoBehaviour:
   dungeonWidth: 50
   dungeonHeight: 50
   corridorWidth: 2
+  useRandomSeed: 1
   seed: 12345
-  minRoomSize: 8
-  maxRoomSize: 15
-  numberOfRooms: 6
-  roomTypeA_Prob: 0.5
-  roomTypeB_Prob: 0.5
+  minRoomSize: 4
+  maxRoomSize: 10
+  numberOfRooms: 8
+  roomTypeA_Prob: 0.67
+  roomTypeB_Prob: 0.33
