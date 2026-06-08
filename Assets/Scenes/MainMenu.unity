@@ -3032,7 +3032,7 @@ MonoBehaviour:
   seedInputField: {fileID: 1432169872}
   minRoomInputField: {fileID: 1144491264}
   maxRoomInputField: {fileID: 1456571997}
-  sceneToLoad: MainScene
+  sceneToLoad: LoadingScene
 --- !u!1 &1201521501
 GameObject:
   m_ObjectHideFlags: 0

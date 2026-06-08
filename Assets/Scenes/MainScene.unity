@@ -1645,7 +1645,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5cc918cb4231f8644882660157d66413, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DungeonTeleporter
-  sceneToLoad: Dungeon Scene
+  sceneToLoad: LoadingScene2
 --- !u!1 &1683815931
 GameObject:
   m_ObjectHideFlags: 0
