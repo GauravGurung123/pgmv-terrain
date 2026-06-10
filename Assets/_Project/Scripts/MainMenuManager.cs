@@ -25,6 +25,9 @@ public class MainMenuManager : MonoBehaviour
     public TMP_InputField minRoomInputField;
     public TMP_InputField maxRoomInputField;
 
+    [Header("UI Feedback")]
+    public GameObject errorIcon;
+
     [Header("Configuración de Escena")]
     public string sceneToLoad = "MainScene";
 
@@ -69,45 +72,45 @@ public class MainMenuManager : MonoBehaviour
 
     public void startAdventure()
     {
+        // 1. Apagamos o icono por defecto cada vez que preme o botón
+        if (errorIcon != null) errorIcon.SetActive(false);
+
+        // 2. Comprobamos se algún campo vital está baleiro
+        if (string.IsNullOrEmpty(seedInputField.text) || 
+            string.IsNullOrEmpty(minRoomInputField.text) || 
+            string.IsNullOrEmpty(maxRoomInputField.text))
+        {
+            if (errorIcon != null) errorIcon.SetActive(true);
+            return; 
+        }
+
+        
+        int resultadoMin = int.Parse(minRoomInputField.text);
+        int resultadoMax = int.Parse(maxRoomInputField.text);
+
+        
+        if (resultadoMin > resultadoMax)
+        {
+            if (errorIcon != null) errorIcon.SetActive(true);
+            return; 
+        }
+
+     
 
         if (config != null)
         {
-
-            if (seedInputField != null && !string.IsNullOrEmpty(seedInputField.text))
-            {
-                if (int.TryParse(seedInputField.text, out int resultadoSeed))
-                    config.seed = resultadoSeed;
-            }
-
-            if (sizeSlider != null)
-            {
-                config.numberOfRooms = (int)sizeSlider.value;
-            }
-
-            if (minRoomInputField != null && !string.IsNullOrEmpty(minRoomInputField.text))
-            {
-                if (int.TryParse(minRoomInputField.text, out int resultadoMin))
-                    config.minRoomSize = resultadoMin;
-            }
-
-            if (maxRoomInputField != null && !string.IsNullOrEmpty(maxRoomInputField.text))
-            {
-                if (int.TryParse(maxRoomInputField.text, out int resultadoMax))
-                    config.maxRoomSize = resultadoMax;
-            }
-
-            if (probabilityASlider != null && probabilityBSlider != null)
-            {
-                config.roomTypeA_Prob = probabilityASlider.value / 100f;
-                config.roomTypeB_Prob = probabilityBSlider.value / 100f;
-            }
+            config.seed = int.Parse(seedInputField.text);
+            config.numberOfRooms = (int)sizeSlider.value;
+            config.minRoomSize = resultadoMin;
+            config.maxRoomSize = resultadoMax;
+            config.roomTypeA_Prob = probabilityASlider.value / 100f;
+            config.roomTypeB_Prob = probabilityBSlider.value / 100f;
             
             #if UNITY_EDITOR
             UnityEditor.EditorUtility.SetDirty(config);
             #endif
         }
 
-        // Cargamos la escena de la isla
         SceneManager.LoadScene(sceneToLoad);
     }
 }

@@ -9,6 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6340499322329010354}
+  - component: {fileID: 4442415168166985693}
+  - component: {fileID: 442180170094179017}
+  - component: {fileID: 2625381601270108307}
   m_Layer: 0
   m_Name: TreasureChest_Final
   m_TagString: Untagged
@@ -32,6 +35,67 @@ Transform:
   - {fileID: 9148944469002026114}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &4442415168166985693
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5261885315928173347}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.8404778, y: 1.5810208, z: 2.73455}
+  m_Center: {x: 0.04793507, y: -0.29051054, z: -0.021708727}
+--- !u!114 &442180170094179017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5261885315928173347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5475dff1149d7bd44973aad64f42e28a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::TreasureChest
+  rewardSceneName: RewardScene
+--- !u!54 &2625381601270108307
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5261885315928173347}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &8754203793955920745
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -103,6 +167,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e584e07a4f0a2904dbd23201252432e2, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4909396470783330261}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: e584e07a4f0a2904dbd23201252432e2, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2907498900932500912}
   m_SourcePrefab: {fileID: 100100000, guid: e584e07a4f0a2904dbd23201252432e2, type: 3}
 --- !u!1 &8483730744736458296 stripped
 GameObject:
@@ -131,6 +198,27 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -1927618347222865722, guid: e584e07a4f0a2904dbd23201252432e2, type: 3}
+--- !u!65 &2907498900932500912
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8483730744736458296}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.0072923033, y: 0.009110737, z: 0.0066445265}
+  m_Center: {x: -0.00008566767, y: 0.0000005966425, z: 0.0033203124}
 --- !u!4 &9148944469002026114 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: e584e07a4f0a2904dbd23201252432e2, type: 3}
