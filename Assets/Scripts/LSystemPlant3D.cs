@@ -3,161 +3,205 @@ using UnityEngine;
 
 public class LSystemPlant3D : MonoBehaviour
 {
-    public string axiom = "X";
+    [Header("L-System Settings")]
+    [SerializeField] private string axiom = "F";
+    [SerializeField] private string ruleF = "F[+F]F[-F]F";
+    [SerializeField, Range(0, 6)] private int iterations = 4;
 
-    public int iterations = 4;
+    [Header("Shape Settings")]
+    [SerializeField] private float angle = 25f;
+    [SerializeField] private float segmentLength = 0.8f;
+    [SerializeField] private float branchRadius = 0.05f;
+    [SerializeField] private float lengthMultiplierPerIteration = 0.75f;
 
-    public float angle = 25f;
+    [Header("Visual Settings")]
+    [SerializeField] private Material branchMaterial;
+    [SerializeField] private Material leafMaterial;
+    [SerializeField] private bool generateOnStart = true;
 
-    public float length = 2f;
+    private readonly List<GameObject> generatedObjects = new List<GameObject>();
 
-    public float width = 0.2f;
-
-    private string currentSentence;
-
-    private Dictionary<char, string> rules =
-        new Dictionary<char, string>();
-
-    struct TurtleState
+    private struct TurtleState
     {
         public Vector3 position;
         public Quaternion rotation;
+        public float length;
+        public float radius;
+
+        public TurtleState(Vector3 position, Quaternion rotation, float length, float radius)
+        {
+            this.position = position;
+            this.rotation = rotation;
+            this.length = length;
+            this.radius = radius;
+        }
     }
 
-    void Start()
+    private void Start()
     {
-        rules.Add('X', "F[+X][-X]FX");
-        rules.Add('F', "FF");
-
-        Generate();
+        if (generateOnStart)
+        {
+            Generate();
+        }
     }
 
-    void Generate()
+    [ContextMenu("Generate L-System Plant")]
+    public void Generate()
     {
-        currentSentence = axiom;
+        ClearGeneratedObjects();
+
+        string sentence = BuildSentence();
+
+        Vector3 currentPosition = transform.position;
+        Quaternion currentRotation = transform.rotation;
+        float currentLength = segmentLength;
+        float currentRadius = branchRadius;
+
+        Stack<TurtleState> stack = new Stack<TurtleState>();
+
+        foreach (char symbol in sentence)
+        {
+            switch (symbol)
+            {
+                case 'F':
+                    Vector3 nextPosition = currentPosition + currentRotation * Vector3.up * currentLength;
+                    CreateBranch(currentPosition, nextPosition, currentRadius);
+                    currentPosition = nextPosition;
+                    break;
+
+                case '+':
+                    currentRotation *= Quaternion.Euler(0f, 0f, angle);
+                    break;
+
+                case '-':
+                    currentRotation *= Quaternion.Euler(0f, 0f, -angle);
+                    break;
+
+                case '&':
+                    currentRotation *= Quaternion.Euler(angle, 0f, 0f);
+                    break;
+
+                case '^':
+                    currentRotation *= Quaternion.Euler(-angle, 0f, 0f);
+                    break;
+
+                case '/':
+                    currentRotation *= Quaternion.Euler(0f, angle, 0f);
+                    break;
+
+                case '\\':
+                    currentRotation *= Quaternion.Euler(0f, -angle, 0f);
+                    break;
+
+                case '[':
+                    stack.Push(new TurtleState(currentPosition, currentRotation, currentLength, currentRadius));
+                    currentLength *= lengthMultiplierPerIteration;
+                    currentRadius *= 0.75f;
+                    break;
+
+                case ']':
+                    CreateLeaf(currentPosition);
+
+                    if (stack.Count > 0)
+                    {
+                        TurtleState state = stack.Pop();
+                        currentPosition = state.position;
+                        currentRotation = state.rotation;
+                        currentLength = state.length;
+                        currentRadius = state.radius;
+                    }
+                    break;
+            }
+        }
+    }
+
+    private string BuildSentence()
+    {
+        string currentSentence = axiom;
 
         for (int i = 0; i < iterations; i++)
         {
             string nextSentence = "";
 
-            foreach (char c in currentSentence)
+            foreach (char symbol in currentSentence)
             {
-                if (rules.ContainsKey(c))
+                if (symbol == 'F')
                 {
-                    nextSentence += rules[c];
+                    nextSentence += ruleF;
                 }
                 else
                 {
-                    nextSentence += c.ToString();
+                    nextSentence += symbol;
                 }
             }
 
             currentSentence = nextSentence;
         }
 
-        DrawPlant();
+        return currentSentence;
     }
 
-    void DrawPlant()
+    private void CreateBranch(Vector3 startPosition, Vector3 endPosition, float radius)
     {
-        Stack<TurtleState> stack =
-            new Stack<TurtleState>();
+        Vector3 direction = endPosition - startPosition;
+        Vector3 middlePoint = startPosition + direction * 0.5f;
 
-        Vector3 currentPosition = Vector3.zero;
+        GameObject branch = GameObject.CreatePrimitive(PrimitiveType.Cylinder);
+        branch.name = "Generated_Branch";
+        branch.transform.SetParent(transform);
+        branch.transform.position = middlePoint;
+        branch.transform.up = direction.normalized;
+        branch.transform.localScale = new Vector3(radius, direction.magnitude * 0.5f, radius);
 
-        Quaternion currentRotation =
-            Quaternion.identity;
-
-        foreach (char c in currentSentence)
+        if (branchMaterial != null)
         {
-            switch (c)
+            branch.GetComponent<Renderer>().material = branchMaterial;
+        }
+
+        generatedObjects.Add(branch);
+    }
+
+    private void CreateLeaf(Vector3 position)
+    {
+        GameObject leaf = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        leaf.name = "Generated_Leaf";
+        leaf.transform.SetParent(transform);
+        leaf.transform.position = position;
+        leaf.transform.localScale = Vector3.one * 0.25f;
+
+        if (leafMaterial != null)
+        {
+            leaf.GetComponent<Renderer>().material = leafMaterial;
+        }
+
+        generatedObjects.Add(leaf);
+    }
+
+    private void ClearGeneratedObjects()
+    {
+        foreach (GameObject generatedObject in generatedObjects)
+        {
+            if (generatedObject != null)
             {
-                case 'F':
-
-                    Vector3 newPosition =
-                        currentPosition +
-                        currentRotation * Vector3.up * length;
-
-                    CreateBranch(
-                        currentPosition,
-                        newPosition);
-
-                    currentPosition = newPosition;
-
-                    break;
-
-                case '+':
-
-                    currentRotation *=
-                        Quaternion.Euler(
-                            0,
-                            0,
-                            angle);
-
-                    break;
-
-                case '-':
-
-                    currentRotation *=
-                        Quaternion.Euler(
-                            0,
-                            0,
-                            -angle);
-
-                    break;
-
-                case '[':
-
-                    stack.Push(new TurtleState
-                    {
-                        position = currentPosition,
-                        rotation = currentRotation
-                    });
-
-                    break;
-
-                case ']':
-
-                    TurtleState state = stack.Pop();
-
-                    currentPosition = state.position;
-
-                    currentRotation = state.rotation;
-
-                    break;
+                DestroyImmediate(generatedObject);
             }
         }
-    }
 
-    void CreateBranch(Vector3 start, Vector3 end)
-    {
-        GameObject branch =
-            GameObject.CreatePrimitive(
-                PrimitiveType.Cylinder);
+        generatedObjects.Clear();
 
-        branch.transform.parent = transform;
+        List<GameObject> oldChildren = new List<GameObject>();
 
-        Vector3 direction = end - start;
+        foreach (Transform child in transform)
+        {
+            if (child.name.StartsWith("Generated_"))
+            {
+                oldChildren.Add(child.gameObject);
+            }
+        }
 
-        branch.transform.position =
-            start + direction / 2f;
-
-        branch.transform.up = direction;
-
-        branch.transform.localScale =
-            new Vector3(
-                width,
-                direction.magnitude / 2f,
-                width);
-
-        Renderer renderer =
-            branch.GetComponent<Renderer>();
-
-        renderer.material =
-            new Material(
-                Shader.Find("Universal Render Pipeline/Lit"));
-
-        renderer.material.color =
-            new Color(0.3f, 0.2f, 0.1f);
+        foreach (GameObject child in oldChildren)
+        {
+            DestroyImmediate(child);
+        }
     }
 }
