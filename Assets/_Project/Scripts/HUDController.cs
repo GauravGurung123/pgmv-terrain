@@ -3,14 +3,19 @@ using UnityEngine;
 
 public class HUDController : MonoBehaviour
 {
-    [Header("References")]
-    public Transform player;
-    public TMP_Text speedText;
-    public TMP_Text headingText;
+    [Header("Targets")]
+    [SerializeField] private Transform player;
+    [SerializeField] private Transform vehicle;
+    [SerializeField] private Rigidbody vehicleRigidbody;
+    [SerializeField] private VehicleController vehicleController;
+
+    [Header("UI")]
+    [SerializeField] private TMP_Text speedText;
+    [SerializeField] private TMP_Text headingText;
 
     private Vector3 lastPlayerPosition;
 
-    void Start()
+    private void Start()
     {
         if (player != null)
         {
@@ -18,37 +23,51 @@ public class HUDController : MonoBehaviour
         }
     }
 
-    void Update()
+    private void Update()
     {
-        if (player == null)
-        {
+        bool driving = vehicleController != null && vehicleController.IsDriving();
+
+        Transform currentTarget = driving ? vehicle : player;
+
+        if (currentTarget == null)
             return;
+
+        UpdateSpeed(driving);
+        UpdateHeading(currentTarget);
+
+        if (!driving && player != null)
+        {
+            lastPlayerPosition = player.position;
         }
-
-        UpdateSpeed();
-        UpdateHeading();
-
-        lastPlayerPosition = player.position;
     }
 
-    private void UpdateSpeed()
+    private void UpdateSpeed(bool driving)
     {
-        float distanceMoved = Vector3.Distance(player.position, lastPlayerPosition);
-        float speed = distanceMoved / Time.deltaTime;
+        float speed;
+
+        if (driving && vehicleRigidbody != null)
+        {
+            speed = vehicleRigidbody.linearVelocity.magnitude;
+        }
+        else
+        {
+            float distanceMoved = Vector3.Distance(player.position, lastPlayerPosition);
+            speed = Time.deltaTime > 0f ? distanceMoved / Time.deltaTime : 0f;
+        }
 
         if (speedText != null)
         {
-            speedText.text = "Speed: " + speed.ToString("F1") + " m/s";
+            speedText.text = $"Speed: {speed:F1} m/s";
         }
     }
 
-    private void UpdateHeading()
+    private void UpdateHeading(Transform target)
     {
-        float heading = player.eulerAngles.y;
+        float heading = target.eulerAngles.y;
 
         if (headingText != null)
         {
-            headingText.text = "Heading: " + heading.ToString("F0") + "°";
+            headingText.text = $"Heading: {heading:F0}°";
         }
     }
 }
