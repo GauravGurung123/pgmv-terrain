@@ -534,6 +534,60 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 776204720}
   m_SourcePrefab: {fileID: 100100000, guid: 036ee36310241ec43b57f2b0d9e88cb1, type: 3}
+--- !u!1 &402665065
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 402665067}
+  - component: {fileID: 402665066}
+  m_Layer: 0
+  m_Name: LSystem_Tree_A_06 (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &402665066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402665065}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51fefc66e29428200a12eacf96151737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LSystemPlant3D
+  axiom: F
+  ruleF: 'F[+F]F[-F][&F]F[/F]'
+  iterations: 4
+  angle: 22
+  segmentLength: 0.4
+  branchRadius: 1
+  lengthMultiplierPerIteration: 0.75
+  branchMaterial: {fileID: 0}
+  leafMaterial: {fileID: 0}
+  generateOnStart: 1
+--- !u!4 &402665067
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 402665065}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 316.9, y: 9.86, z: 385.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -2169,6 +2223,60 @@ MonoBehaviour:
   playerCameraTarget: {fileID: 1060905095}
   vehicleCameraTarget: {fileID: 556311123}
   interactionKey: 101
+--- !u!1 &1368506409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1368506411}
+  - component: {fileID: 1368506410}
+  m_Layer: 0
+  m_Name: LSystem_Tree_A_06 (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1368506410
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368506409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51fefc66e29428200a12eacf96151737, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LSystemPlant3D
+  axiom: F
+  ruleF: 'F[+F]F[-F][&F]F[/F]'
+  iterations: 4
+  angle: 22
+  segmentLength: 0.4
+  branchRadius: 1
+  lengthMultiplierPerIteration: 0.75
+  branchMaterial: {fileID: 0}
+  leafMaterial: {fileID: 0}
+  generateOnStart: 1
+--- !u!4 &1368506411
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1368506409}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 328.6, y: 28.22, z: 181.5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1388846255
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4379,6 +4487,8 @@ SceneRoots:
   - {fileID: 1593270307}
   - {fileID: 908831739}
   - {fileID: 2065337515}
+  - {fileID: 1368506411}
+  - {fileID: 402665067}
   - {fileID: 674333053}
   - {fileID: 1827027050}
   - {fileID: 1124305275}
